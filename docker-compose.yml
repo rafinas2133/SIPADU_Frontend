@@ -1,0 +1,110 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: sipadu_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sipadu_cart
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations/001_init_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./backend/migrations/002_seed_demo.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sipadu_cart"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    container_name: sipadu_ml
+    restart: unless-stopped
+    environment:
+      FLASK_ENV: production
+      MODEL_PATH: /app/model.pkl
+      MODEL_DIR: /app/models
+    volumes:
+      - model_data:/app/models
+    ports:
+      - "5000:5000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sipadu_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      ml-service:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: sipadu_cart
+      DB_USER: postgres
+      DB_PASSWORD: ${DB_PASSWORD:-postgres123}
+      JWT_SECRET: ${JWT_SECRET:-change_this_jwt_secret_min_32_chars_long}
+      JWT_EXPIRES_IN: 15m
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change_this_refresh_secret_min_32}
+      JWT_REFRESH_EXPIRES_IN: 7d
+      ML_SERVICE_URL: http://ml-service:5000
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+      UPLOAD_DIR: /app/uploads
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@sipadu.sch.id}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@12345}
+    volumes:
+      - uploads_data:/app/uploads
+      - logs_data:/app/logs
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sipadu_frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "80:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  postgres_data:
+  uploads_data:
+  logs_data:
+  model_data:
+
+networks:
+  default:
+    name: sipadu_network
