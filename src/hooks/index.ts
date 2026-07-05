@@ -62,16 +62,6 @@ export function useAdminDashboard() {
   })
 }
 
-export function useParentDashboard() {
-  const role = useAuthStore((s) => s.user?.role)
-  return useQuery({
-    queryKey: ['dashboard', 'parent'],
-    queryFn: () => dashboardApi.getParentStats().then((r) => r.data.data),
-    refetchInterval: 60_000,
-    enabled: role === 'orang_tua',
-  })
-}
-
 // ── User hooks ────────────────────────────────────────────────────────────────
 export function useUsers(params?: { page?: number; limit?: number; search?: string; role?: string }) {
   return useQuery({

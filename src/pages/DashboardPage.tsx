@@ -1,11 +1,11 @@
-import { Users, ClipboardCheck, Clock, Brain, Plus, ArrowRight, BookOpen, TrendingUp } from 'lucide-react'
+import { Users, ClipboardCheck, Clock, Brain, Plus, ArrowRight, BookOpen } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
 } from 'recharts'
 import { useAuthStore } from '@/stores/auth.store'
 import {
-  useGuruDashboard, useAdminDashboard, useParentDashboard,
+  useGuruDashboard, useAdminDashboard,
   useRecentActivity, usePredictionDistribution, usePredictions,
 } from '@/hooks'
 import { StatCard, PageLoader, TalentBadge, EmptyState } from '@/components/ui'
@@ -89,85 +89,9 @@ const DOT_COLORS: Record<string, string> = {
   LOGIN:              'bg-slate-400',
 }
 
-interface ParentChildSummary {
-  id: string
-  name: string
-  nis: string
-  class?: { id: string; name: string }
-  latest_prediction: TalentCategory | null
-  latest_confidence: number | null
-  last_observed: string | null
-}
-
 export default function DashboardPage() {
   const { user } = useAuthStore()
-
-  if (user?.role === 'orang_tua') {
-    return <ParentDashboard />
-  }
-
   return <StaffDashboard isAdmin={user?.role === 'admin'} />
-}
-
-function ParentDashboard() {
-  const { user } = useAuthStore()
-  const { data, isLoading } = useParentDashboard()
-  const children: ParentChildSummary[] = data?.children ?? []
-
-  if (isLoading) return <PageLoader />
-
-  return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-2xl p-6 text-white shadow-lg shadow-emerald-600/20">
-        <p className="text-emerald-100 text-sm">Selamat datang,</p>
-        <h2 className="text-2xl font-bold mt-0.5">{user?.name} 👋</h2>
-        <p className="text-emerald-200 text-sm mt-1">
-          {children.length > 0
-            ? `Pantau perkembangan ${children.length} anak Anda`
-            : 'Akun belum terhubung ke data siswa'}
-        </p>
-      </div>
-
-      {children.length === 0 ? (
-        <EmptyState
-          title="Belum ada data anak"
-          description="Hubungi guru atau administrator untuk menghubungkan akun Anda ke data siswa."
-        />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {children.map((child) => (
-            <div key={child.id} className="card p-5">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h3 className="font-bold text-slate-900">{child.name}</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    {child.class?.name ?? 'Kelas'} · NIS {child.nis}
-                  </p>
-                </div>
-                {child.latest_prediction
-                  ? <TalentBadge category={child.latest_prediction} />
-                  : <span className="badge-slate">Belum diobservasi</span>}
-              </div>
-              {child.last_observed && (
-                <p className="text-xs text-slate-500 mb-4">
-                  Observasi terakhir: {fDateShort(child.last_observed)}
-                  {child.latest_confidence != null && ` · ${fConfidence(child.latest_confidence, 0)}% kepercayaan`}
-                </p>
-              )}
-              <div className="flex gap-2">
-                <Link to="/perkembangan" className="btn-secondary btn-sm flex-1 justify-center">
-                  <TrendingUp size={14} /> Perkembangan
-                </Link>
-                <Link to={`/buku-penghubung/${child.id}`} className="btn-primary btn-sm flex-1 justify-center">
-                  <BookOpen size={14} /> Buku Penghubung
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  )
 }
 
 function StaffDashboard({ isAdmin }: { isAdmin: boolean }) {

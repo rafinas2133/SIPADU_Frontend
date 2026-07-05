@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Users, ClipboardList, Brain, BookOpen,
   Download, LogOut, ChevronRight, School, UserCircle,
-  TrendingUp, ShieldAlert, Loader2,
+  ShieldAlert, Loader2,
 } from 'lucide-react'
 import { cn } from '@/utils'
 import { useAuthStore } from '@/stores/auth.store'
@@ -29,16 +29,9 @@ const MENU_ADMIN = [
   { to: '/admin/audit',  icon: ShieldAlert,     label: 'Audit Log' },
 ]
 
-const MENU_ORTU = [
-  { to: '/dashboard',       icon: LayoutDashboard, label: 'Beranda' },
-  { to: '/perkembangan',    icon: TrendingUp,      label: 'Perkembangan Anak' },
-  { to: '/buku-penghubung', icon: BookOpen,        label: 'Buku Penghubung' },
-]
-
 const ROLE_LABEL: Record<string, string> = {
-  admin:      'Administrator',
-  guru:       'Guru Kelas',
-  orang_tua:  'Orang Tua',
+  admin: 'Administrator',
+  guru:  'Guru Kelas',
 }
 
 // ── Sidebar component ─────────────────────────────────────────────────────────
@@ -46,10 +39,7 @@ export function Sidebar() {
   const { user } = useAuthStore()
   const logout   = useLogout()
 
-  const menu =
-    user?.role === 'admin'      ? MENU_ADMIN :
-    user?.role === 'orang_tua'  ? MENU_ORTU  :
-    MENU_GURU
+  const menu = user?.role === 'admin' ? MENU_ADMIN : MENU_GURU
 
   const initials = user?.name
     .split(' ')

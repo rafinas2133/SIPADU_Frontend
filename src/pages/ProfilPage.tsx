@@ -33,12 +33,11 @@ type ProfileForm   = z.infer<typeof profileSchema>
 type PasswordForm  = z.infer<typeof passwordSchema>
 
 const ROLE_LABELS: Record<string, string> = {
-  admin: 'Administrator', guru: 'Guru Kelas', orang_tua: 'Orang Tua',
+  admin: 'Administrator', guru: 'Guru Kelas',
 }
 const ROLE_COLORS: Record<string, string> = {
   admin: 'bg-violet-100 text-violet-700',
   guru:  'bg-blue-100 text-blue-700',
-  orang_tua: 'bg-emerald-100 text-emerald-700',
 }
 
 export default function ProfilPage() {

@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Loader2 } from 'lucide-react'
-import { useClasses, useCreateChild, useUpdateChild, useUsers } from '@/hooks'
+import { useClasses, useCreateChild, useUpdateChild } from '@/hooks'
 import { Modal } from '@/components/ui'
 import type { Child } from '@/types'
 
@@ -12,7 +12,7 @@ const schema = z.object({
   birth_date: z.string().min(1, 'Tanggal lahir wajib diisi'),
   gender: z.enum(['L', 'P']),
   class_id: z.string().uuid('Pilih kelas'),
-  parent_user_id: z.string().uuid().optional().or(z.literal('')),
+  parent_phone: z.string().optional(),
   notes: z.string().optional(),
 })
 
@@ -27,12 +27,10 @@ export function ChildFormModal({
 }) {
   const isEdit = !!child
   const { data: classesData } = useClasses()
-  const { data: parentsData } = useUsers({ role: 'orang_tua', limit: 100 })
   const createChild = useCreateChild()
   const updateChild = useUpdateChild()
 
   const classes = classesData?.data ?? []
-  const parents = parentsData?.data ?? []
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -43,10 +41,10 @@ export function ChildFormModal({
           birth_date: child.birth_date.split('T')[0],
           gender: child.gender,
           class_id: child.class_id,
-          parent_user_id: child.parent_user_id ?? '',
+          parent_phone: child.parent_phone ?? '',
           notes: child.notes ?? '',
         }
-      : { gender: 'L', parent_user_id: '' },
+      : { gender: 'L', parent_phone: '' },
   })
 
   const isPending = createChild.isPending || updateChild.isPending
@@ -54,7 +52,7 @@ export function ChildFormModal({
   const onSubmit = (data: FormData) => {
     const payload = {
       ...data,
-      parent_user_id: data.parent_user_id || undefined,
+      parent_phone: data.parent_phone || undefined,
       notes: data.notes || undefined,
     }
 
@@ -103,14 +101,14 @@ export function ChildFormModal({
           </div>
           <div>
             <label className="form-label">
-              Orang Tua <span className="normal-case font-normal text-slate-400">(opsional)</span>
+              No. HP Orang Tua <span className="normal-case font-normal text-slate-400">(opsional)</span>
             </label>
-            <select {...register('parent_user_id')} className="form-select">
-              <option value="">Tidak ada / belum dihubungkan</option>
-              {parents.map((p) => (
-                <option key={p.id} value={p.id}>{p.name} ({p.email})</option>
-              ))}
-            </select>
+            <input
+              {...register('parent_phone')}
+              type="tel"
+              className="form-input"
+              placeholder="08xxxxxxxxxx"
+            />
           </div>
         </div>
 

@@ -12,7 +12,6 @@ const ObservasiPage      = lazy(() => import('@/pages/ObservasiPage'))
 const HasilCARTPage      = lazy(() => import('@/pages/HasilCARTPage'))
 const BukuPenghubungPage = lazy(() => import('@/pages/BukuPenghubungPage'))
 const EksporPage         = lazy(() => import('@/pages/EksporPage'))
-const PerkembanganPage   = lazy(() => import('@/pages/PerkembanganPage'))
 const ProfilPage         = lazy(() => import('@/pages/ProfilPage'))
 const KelasPage          = lazy(() => import('@/pages/KelasPage'))
 const AdminUsersPage     = lazy(() => import('@/pages/AdminPages').then(m => ({ default: m.AdminUsersPage })))
@@ -67,12 +66,6 @@ const router = createBrowserRouter([
             { path: '/admin/users', element: wrap(AdminUsersPage) },
             { path: '/admin/kelas', element: wrap(KelasPage) },
             { path: '/admin/audit', element: wrap(AdminAuditPage) },
-          ],
-        },
-        {
-          element: <ProtectedRoute roles={['orang_tua']} />,
-          children: [
-            { path: '/perkembangan', element: wrap(PerkembanganPage) },
           ],
         },
         { path: '*', element: <NotFoundPage /> },

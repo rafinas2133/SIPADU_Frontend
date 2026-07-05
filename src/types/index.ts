@@ -1,6 +1,6 @@
 // ── Auth & User ──────────────────────────────────────────────────────────────
 
-export type UserRole = 'admin' | 'guru' | 'orang_tua'
+export type UserRole = 'admin' | 'guru'
 
 export interface User {
   id: string
@@ -37,7 +37,7 @@ export interface Child {
   birth_date: string
   gender: 'L' | 'P'
   class_id: string
-  parent_user_id?: string
+  parent_phone?: string
   photo_path?: string
   notes?: string
   class?: Class
@@ -121,7 +121,6 @@ export interface DashboardOverview {
   observed_percentage?: number
   total_users?: number
   total_guru?: number
-  total_orang_tua?: number
 }
 
 export interface DashboardStats {
@@ -222,7 +221,7 @@ export interface ChildForm {
   birth_date: string
   gender: 'L' | 'P'
   class_id: string
-  parent_user_id?: string
+  parent_phone?: string
   notes?: string
 }
 

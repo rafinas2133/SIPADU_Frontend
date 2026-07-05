@@ -13,12 +13,11 @@ import { z } from 'zod'
 import type { User, UserRole } from '@/types'
 
 const ROLE_BADGES: Record<UserRole, string> = {
-  admin:      'bg-violet-100 text-violet-700',
-  guru:       'bg-blue-100 text-blue-700',
-  orang_tua:  'bg-emerald-100 text-emerald-700',
+  admin: 'bg-violet-100 text-violet-700',
+  guru:  'bg-blue-100 text-blue-700',
 }
 const ROLE_LABELS: Record<UserRole, string> = {
-  admin: 'Administrator', guru: 'Guru', orang_tua: 'Orang Tua',
+  admin: 'Administrator', guru: 'Guru',
 }
 
 export function AdminUsersPage() {
@@ -60,7 +59,6 @@ export function AdminUsersPage() {
           <option value="">Semua Role</option>
           <option value="admin">Administrator</option>
           <option value="guru">Guru</option>
-          <option value="orang_tua">Orang Tua</option>
         </select>
       </div>
 
@@ -144,7 +142,7 @@ const userSchema = z.object({
   name:     z.string().min(2, 'Nama minimal 2 karakter'),
   email:    z.string().email('Format email tidak valid'),
   password: z.string().min(8, 'Password minimal 8 karakter').optional().or(z.literal('')),
-  role:     z.enum(['admin', 'guru', 'orang_tua']),
+  role:     z.enum(['admin', 'guru']),
 })
 type UserForm = z.infer<typeof userSchema>
 
@@ -191,7 +189,6 @@ function UserFormModal({ user, onClose }: { user?: User; onClose: () => void }) 
           <select {...register('role')} className="form-select">
             <option value="guru">Guru</option>
             <option value="admin">Administrator</option>
-            <option value="orang_tua">Orang Tua</option>
           </select>
         </div>
         <div className="flex gap-3 justify-end pt-2 border-t border-slate-100">
