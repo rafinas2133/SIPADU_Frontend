@@ -116,7 +116,6 @@ export default function LoginPage() {
               {[
                 { role: 'Admin', email: 'admin@sipadu.sch.id' },
                 { role: 'Guru', email: 'rina@sipadu.sch.id' },
-                { role: 'Orang Tua', email: 'ahmad@gmail.com' },
               ].map(({ role, email }) => (
                 <div key={role} className="flex items-center justify-between text-xs bg-slate-50 rounded-lg px-3 py-1.5">
                   <span className="text-slate-500">{role}</span>

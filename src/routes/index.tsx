@@ -4,18 +4,18 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { ProtectedRoute, GuestRoute } from './guards'
 import { PageLoader } from '@/components/ui'
 
-const LoginPage          = lazy(() => import('@/pages/LoginPage'))
-const DashboardPage      = lazy(() => import('@/pages/DashboardPage'))
-const SiswaPage          = lazy(() => import('@/pages/SiswaPage'))
-const ProfilSiswaPage    = lazy(() => import('@/pages/ProfilSiswaPage'))
-const ObservasiPage      = lazy(() => import('@/pages/ObservasiPage'))
-const HasilCARTPage      = lazy(() => import('@/pages/HasilCARTPage'))
+const LoginPage = lazy(() => import('@/pages/LoginPage'))
+const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
+const SiswaPage = lazy(() => import('@/pages/SiswaPage'))
+const ProfilSiswaPage = lazy(() => import('@/pages/ProfilSiswaPage'))
+const ObservasiPage = lazy(() => import('@/pages/ObservasiPage'))
+const HasilCARTPage = lazy(() => import('@/pages/HasilCARTPage'))
 const BukuPenghubungPage = lazy(() => import('@/pages/BukuPenghubungPage'))
-const EksporPage         = lazy(() => import('@/pages/EksporPage'))
-const ProfilPage         = lazy(() => import('@/pages/ProfilPage'))
-const KelasPage          = lazy(() => import('@/pages/KelasPage'))
-const AdminUsersPage     = lazy(() => import('@/pages/AdminPages').then(m => ({ default: m.AdminUsersPage })))
-const AdminAuditPage     = lazy(() => import('@/pages/AdminPages').then(m => ({ default: m.AdminAuditPage })))
+const EksporPage = lazy(() => import('@/pages/EksporPage'))
+const ProfilPage = lazy(() => import('@/pages/ProfilPage'))
+const KelasPage = lazy(() => import('@/pages/KelasPage'))
+const AdminUsersPage = lazy(() => import('@/pages/AdminPages').then(m => ({ default: m.AdminUsersPage })))
+const AdminAuditPage = lazy(() => import('@/pages/AdminPages').then(m => ({ default: m.AdminAuditPage })))
 
 function NotFoundPage() {
   return (
